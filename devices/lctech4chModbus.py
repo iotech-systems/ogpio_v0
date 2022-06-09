@@ -1,7 +1,7 @@
 
-import time, serial
-from devices.modbusBoard import modbusBoard
+import serial
 from crcmod.predefined import *
+from core.modbusBoard import modbusBoard
 
 
 class lctech4chModbus(modbusBoard):

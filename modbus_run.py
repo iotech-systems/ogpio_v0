@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import time, serial, sys
-from devices.modbusBoard import modbusBoard
+from core.modbusBoard import modbusBoard
 from devices.lctech4chModbus import lctech4chModbus
 
 
