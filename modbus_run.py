@@ -1,24 +1,44 @@
 #!/usr/bin/env python3
 
-import time, serial
+import time, serial, sys
 from devices.modbusBoard import modbusBoard
 from devices.lctech4chModbus import lctech4chModbus
 
 
 print("\n\n\t--[ modbus-scan ]--")
 
-# -- input data --
-_port = input("\tport: ")
-if _port == "":
-   _port = "/dev/ttyUSB0"
-_baudrate = input("\tbaudrate: ")
-if _baudrate in [None, ""]:
-   _baudrate = 9600
+_prt = ""
+_bdr = ""
+_par = ""
+
+if len(sys.argv) == 4:
+   _prt = sys.argv[1]
+   _bdr = sys.argv[2]
+   _par = sys.argv[3]
+
+# - - - set - - -
+if _prt == "":
+   _port = input("\tport: ")
+   if _port == "":
+      _port = "/dev/ttyUSB0"
 else:
-   _baudrate = int(_baudrate)
-_parity = input("\tparity: ")
-if _parity == "":
-   _parity = "N"
+   _port = _prt
+# - - - set - - -
+if _bdr == "":
+   _baudrate = input("\tbaudrate: ")
+   if _baudrate in [None, ""]:
+      _baudrate = 9600
+   else:
+      _baudrate = int(_baudrate)
+else:
+   _baudrate = int(_bdr)
+# - - - set - - -
+if _par == "":
+   _parity = input("\tparity: ")
+   if _parity == "":
+      _parity = "N"
+else:
+   _parity = _par
 
 msg = f"\n\tusing: [ port: {_port}; baudrate: {_baudrate}; parity: {_parity}; ]\n"
 print(msg)
