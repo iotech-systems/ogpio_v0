@@ -30,6 +30,7 @@ class modbusBoard(object):
 
    def __send__(self, outbuff: bytearray) -> int:
       ser: serial.Serial = self.__ser_port__()
+      print(f" <<< SENDING: {outbuff}")
       cnt = ser.write(outbuff)
       ser.flush()
       # -- sleep 20 ms --
