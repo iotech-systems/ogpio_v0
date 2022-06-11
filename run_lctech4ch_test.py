@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import time, serial, sys
-from core.modbusBoard import modbusBoard
-from devices.lctech4chModbus import lctech4chModbus
+from interfaces.modbusBoard import modbusBoard
+from boards.lctech4chModbus import lctech4chModbus
 
 
 print("\n\n\t--[ modbus-scan ]--")

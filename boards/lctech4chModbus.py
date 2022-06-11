@@ -1,7 +1,7 @@
 
 import serial
 from crcmod.predefined import *
-from core.modbusBoard import modbusBoard
+from interfaces.modbusBoard import modbusBoard
 
 
 class lctech4chModbus(modbusBoard):
