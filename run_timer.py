@@ -37,8 +37,8 @@ print(f"\n\n\t- - [ run-timer ] - -\n\t- - [ {_src} ] - -")
 print(f"\n\tusing: [ port: {_prt}; baudrate: {_bdr}; parity: {_par}; ]\n")
 
 
-def set_channel(ser: serial.Serial, chnl: int, ont: str, oft: str):
-   board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=chnl)
+def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
+   board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
    chnl_state: bool = clock.get_state(ont, oft)
    board.set_channel(chnl, chnl_state)
 
@@ -50,7 +50,7 @@ def main():
    # -- loop --
    while True:
       # -- use global variables --
-      set_channel(ser, _chl, _ont, _oft)
+      set_channel(ser, MODBUS_ADR, _chl, _ont, _oft)
       time.sleep(8.0)
 
 
