@@ -16,6 +16,28 @@ class lctech4chModbus(modbusBoard):
       resp: bytearray = super().__read__()
       print(f"resp: {resp}")
 
+   def set_all_channels(self, val: bool):
+      """
+         5, turn on all relay
+         send :FF 0F 00 00 00 08 01 FF 30 1D
+         return :FF 0F 00 00 00 08 41 D3
+         6,turn off all relay
+         send:FF 0F 00 00 00 08 01 00 70 5D
+         return :FF 0F 00 00 00 08 41 D3
+      """
+      if val:
+         data: [] = [0x00, 0x0f, 0x00, 0x00, 0x00, 0x08, 0x01, 0xff]
+         data[0] = self.modbus_adr
+         outbuff = self.__add_crc_data__(bytearray(data))
+      else:
+         data: [] = [0x00, 0x0f, 0x00, 0x00, 0x00, 0x08, 0x01, 0x00]
+         data[0] = self.modbus_adr
+         outbuff = self.__add_crc_data__(bytearray(data))
+      # -- send & recv --
+      super().__send__(outbuff)
+      resp: bytearray = super().__read__()
+      print(f" >>> RESP: {resp}")
+
    def read_channel(self, chnl: int):
       pass
 

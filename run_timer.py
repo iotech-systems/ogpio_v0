@@ -47,6 +47,7 @@ def main():
    ser = serial.Serial(port=_prt, baudrate=_bdr, parity=_par)
    board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=MODBUS_ADR)
    board.set_bus_address(0, MODBUS_ADR)
+   board.set_all_channels(False)
    # -- loop --
    while True:
       # -- use global variables --

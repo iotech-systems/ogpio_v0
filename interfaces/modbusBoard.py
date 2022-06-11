@@ -14,6 +14,9 @@ class modbusBoard(object):
    def set_channel(self, chnl: int, val: bool):
       pass
 
+   def set_all_channels(self, val: bool):
+      pass
+
    def read_channel(self, chnl: int):
       pass
 
