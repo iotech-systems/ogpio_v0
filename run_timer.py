@@ -43,8 +43,8 @@ def set_channel(ser: serial.Serial, chnl: int, ont: str, oft: str):
 # (ser: serial.Serial, unit_adr: int, relay: int, val: int)
 def main():
    ser = serial.Serial(port=_prt, baudrate=_bdr, parity=_par)
-   # modbus_adr = 8
-   # device: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=modbus_adr)
+   modbus_adr = 8
+   device: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=modbus_adr)
    # -- loop --
    while True:
       # -- use global variables --
