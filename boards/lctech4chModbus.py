@@ -15,7 +15,7 @@ class lctech4chModbus(modbusBoard):
       super().__send__(outbuff)
       resp: bytearray = super().__read__()
       if resp == outbuff:
-         print("set_channel: OK")
+         print("\t\t[ set_channel: OK ]")
 
    def set_all_channels(self, val: bool):
       """
