@@ -48,6 +48,6 @@ class modbusBoard(object):
          inbuff.extend(ser.read(1))
          if ser.in_waiting == 0:
             break
-      print(f" >>> RESP: {inbuff}")
+      print(f" >>>    RESP: {inbuff}")
       # -- return --
       return inbuff
