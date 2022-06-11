@@ -5,6 +5,8 @@ from interfaces.modbusBoard import modbusBoard
 from boards.lctech4chModbus import lctech4chModbus
 from core.clock import clock
 
+MODBUS_ADR = 8
+
 _src = "this script full path"
 _prt = ""   # port
 _bdr = ""   # baudrate
@@ -43,8 +45,8 @@ def set_channel(ser: serial.Serial, chnl: int, ont: str, oft: str):
 # (ser: serial.Serial, unit_adr: int, relay: int, val: int)
 def main():
    ser = serial.Serial(port=_prt, baudrate=_bdr, parity=_par)
-   modbus_adr = 8
-   device: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=modbus_adr)
+   board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=MODBUS_ADR)
+   board.set_bus_address(0, MODBUS_ADR)
    # -- loop --
    while True:
       # -- use global variables --
