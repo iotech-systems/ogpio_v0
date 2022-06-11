@@ -46,8 +46,11 @@ def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
 def main():
    ser = serial.Serial(port=_prt, baudrate=_bdr, parity=_par)
    board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=MODBUS_ADR)
+   print(f"\n- - - [ SETTING MODBUS_ADR: {MODBUS_ADR} ] - - -\n")
    board.set_bus_address(0, MODBUS_ADR)
+   print("\n- - - [ SETTING ALL OFF ] - - -\n")
    board.set_all_channels(False)
+   time.sleep(4.0)
    # -- loop --
    while True:
       # -- use global variables --
