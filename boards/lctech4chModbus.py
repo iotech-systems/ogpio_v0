@@ -36,7 +36,6 @@ class lctech4chModbus(modbusBoard):
       # -- send & recv --
       super().__send__(outbuff)
       resp: bytearray = super().__read__()
-      print(f" >>> RESP: {resp}")
 
    def read_channel(self, chnl: int):
       pass
