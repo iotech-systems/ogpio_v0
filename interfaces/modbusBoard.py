@@ -26,6 +26,10 @@ class modbusBoard(object):
    def read_bus_address(self, old_adr: int):
       pass
 
+   @staticmethod
+   def ping(ser: serial.Serial, baudrate: int):
+      pass
+
    def __ser_port__(self) -> serial.Serial:
       if not self.ser_port.isOpen():
          self.ser_port.open()
@@ -39,6 +43,10 @@ class modbusBoard(object):
       # -- sleep 20 ms --
       time.sleep(0.02)
       return cnt
+
+   def __send_ser__(self, ser: serial.Serial, outbuff: bytearray):
+      self.ser_port = ser
+      self.__send__(outbuff)
 
    def __read__(self) -> [None, bytearray]:
       ser: serial.Serial = self.__ser_port__()

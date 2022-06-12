@@ -6,12 +6,14 @@ from interfaces.modbusBoard import modbusBoard
 
 class lctech4chModbus(modbusBoard):
 
+   baudrates = {2: 4800, 3: 9600, 4: 19200}
+
    def __init__(self, ser_port: serial.Serial, modbus_adr: int):
       super().__init__(ser_port, modbus_adr)
 
    def set_channel(self, chnl: int, val: bool):
       data = self.__set_channel_buff__(chnl, val)
-      outbuff = self.__add_crc_data__(data)
+      outbuff = lctech4chModbus.__crc_data__(data)
       super().__send__(outbuff)
       resp: bytearray = super().__read__()
       if resp == outbuff:
@@ -29,11 +31,11 @@ class lctech4chModbus(modbusBoard):
       if val:
          data: [] = [0x00, 0x0f, 0x00, 0x00, 0x00, 0x08, 0x01, 0xff]
          data[0] = self.modbus_adr
-         outbuff = self.__add_crc_data__(bytearray(data))
+         outbuff = lctech4chModbus.__crc_data__(bytearray(data))
       else:
          data: [] = [0x00, 0x0f, 0x00, 0x00, 0x00, 0x08, 0x01, 0x00]
          data[0] = self.modbus_adr
-         outbuff = self.__add_crc_data__(bytearray(data))
+         outbuff = lctech4chModbus.__crc_data__(bytearray(data))
       # -- send & recv --
       super().__send__(outbuff)
       resp: bytearray = super().__read__()
@@ -53,13 +55,37 @@ class lctech4chModbus(modbusBoard):
       data: () = (0x00, 0x10, 0x00, 0x00, 0x00, 0x01, 0x02, 0x00)
       buff: bytearray = bytearray(data)
       buff.append(self.modbus_adr)
-      outbuff: bytearray = self.__add_crc_data__(buff)
+      outbuff: bytearray = lctech4chModbus.__crc_data__(buff)
       cnt_out: int = self.__send__(outbuff)
       inbuff: bytearray = self.__read__()
       return len(inbuff) == cnt_out
 
    def read_bus_address(self, old_adr: int):
       pass
+
+   """
+      Read the baud rate
+      send: FF 03 03 E8 00 01 11 A4
+      return : FF 03 02 00 04 90 53
+      remarks：The 5th byte of the Return frame represent read 
+      baud rate, 0x02, 0x03, x04 represents 4800, 9600, 19200.
+      ping is done by getting baudrate from the board
+   """
+   @staticmethod
+   def ping(ser, modbus_adr):
+      data: [] = [0xff, 0x03, 0x03, 0xe8, 0x00, 0x01]
+      data[0] = modbus_adr
+      outbuff = lctech4chModbus.__crc_data__(bytearray(data))
+      mb: modbusBoard = modbusBoard(ser, modbus_adr)
+      mb.__send__(outbuff)
+      resp: bytearray = mb.__read__()
+      if (len(resp) > 6) and (resp[5] == 0x04):
+         rval, msg = True, "GOOD_PONG"
+      else:
+         rval, msg = False, "BAD_PONG"
+      # -- end --
+      print(msg)
+      return rval
 
    def __set_channel_buff__(self, relay: int, val: bool) -> [None, bytearray]:
       """
@@ -79,7 +105,8 @@ class lctech4chModbus(modbusBoard):
       # -- return buffer --
       return buff
 
-   def __add_crc_data__(self, data: bytearray):
+   @staticmethod
+   def __crc_data__(data: bytearray):
       crc_func = mkPredefinedCrcFun("modbus")
       crc_int = crc_func(data)
       crc = crc_int.to_bytes(2, "little")

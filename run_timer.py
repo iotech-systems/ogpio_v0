@@ -4,8 +4,8 @@ import serial, sys, time
 from interfaces.modbusBoard import modbusBoard
 from boards.lctech4chModbus import lctech4chModbus
 from core.clock import clock
-from core.locationTxtInfo import locationTxtInfo
 from core.sunclock import *
+from utils.sysUtils import sysUtils
 
 MODBUS_ADR = 8
 LOC_INFO: locationTxtInfo = locationTxtInfo("location.txt")
@@ -38,9 +38,25 @@ if not clock.is_good_time(_ont):
 if not clock.is_good_time(_oft):
    exit(1)
 
+
 print(f"\n\n\t- - [ run-timer ] - -\n\t- - [ {_src} ] - -")
 print(f"\n\tusing: [ port: {_prt}; baudrate: {_bdr}; parity: {_par}; ]\n")
 
+
+def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
+   # -- auto detect com port --
+   ser: [None, serial.Serial] = None
+   ports = sysUtils.usbPorts()
+   for port in ports:
+      try:
+         ser = serial.Serial(port.device, baudrate=bdr, parity=par)
+         if lctech4chModbus.ping(ser, mb_adr):
+            break
+         ser = None
+      except Exception as e:
+         print(e)
+   # -- return --
+   return ser
 
 def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
    # -- run --
@@ -57,7 +73,11 @@ def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
 
 # (ser: serial.Serial, unit_adr: int, relay: int, val: int)
 def main():
-   ser = serial.Serial(port=_prt, baudrate=_bdr, parity=_par)
+   # -- --
+   ser = get_comm(mb_adr=MODBUS_ADR, bdr=_bdr, par=_par)
+   if ser is None:
+      exit(22)
+   # -- --
    board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=MODBUS_ADR)
    print(f"\n- - - [ SETTING MODBUS_ADR: {MODBUS_ADR} ] - - -\n")
    board.set_bus_address(0, MODBUS_ADR)
