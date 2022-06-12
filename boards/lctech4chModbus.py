@@ -6,7 +6,7 @@ from interfaces.modbusBoard import modbusBoard
 
 class lctech4chModbus(modbusBoard):
 
-   baudrates = {2: 4800, 3: 9600, 4: 19200}
+   baudrates = {4800: 0x02, 9600: 0x03, 19200: 0x04}
 
    def __init__(self, ser_port: serial.Serial, modbus_adr: int):
       super().__init__(ser_port, modbus_adr)
@@ -79,7 +79,8 @@ class lctech4chModbus(modbusBoard):
       mb: modbusBoard = modbusBoard(ser, modbus_adr)
       mb.__send__(outbuff)
       resp: bytearray = mb.__read__()
-      if (len(resp) > 6) and (resp[5] == 0x04):
+      bdr_code = lctech4chModbus.baudrates[ser.baudrate]
+      if (len(resp) > 6) and (resp[5] == bdr_code):
          rval, msg = True, "GOOD_PONG"
       else:
          rval, msg = False, "BAD_PONG"
