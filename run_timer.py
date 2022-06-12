@@ -40,6 +40,7 @@ print(f"\n\tusing: [ port: {_prt}; baudrate: {_bdr}; parity: {_par}; ]\n")
 def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
    board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
    chnl_state: bool = clock.get_state(ont, oft)
+   print(f"new chnl_state: {chnl_state}")
    board.set_channel(chnl, chnl_state)
 
 # (ser: serial.Serial, unit_adr: int, relay: int, val: int)
