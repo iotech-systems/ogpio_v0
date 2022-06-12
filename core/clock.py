@@ -1,11 +1,15 @@
 
 import datetime
+from core.sunclock import DAY_PARTS
 
 
 class clock(object):
 
    @staticmethod
    def is_good_time(time_str: str) -> bool:
+      if time_str in DAY_PARTS:
+         return True
+      # -- test string --
       arr = time_str.split(":")
       if len(arr) != 2:
          raise Exception("bad arr")
@@ -33,8 +37,11 @@ class clock(object):
          return False
 
    @staticmethod
-   def get_time(tme: str) -> datetime.time:
-      hr, mn = tme.split(":")
+   def get_time(tme: [datetime.time, str]) -> datetime.time:
+      if isinstance(tme, datetime.time):
+         return tme
+      # -- parse string --
+      hr, mn, _ = tme.split(":")
       hr: int = int(hr)
       mn: int = int(mn)
       return datetime.time(hour=hr, minute=mn, second=0, microsecond=0)
