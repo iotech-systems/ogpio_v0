@@ -73,9 +73,9 @@ class lctech4chModbus(modbusBoard):
       # -- relay address --
       buff.extend([0, relay])
       if val:
-         buff.extend([0x00, 0x00])
-      else:
          buff.extend([0xff, 0x00])
+      else:
+         buff.extend([0x00, 0x00])
       # -- return buffer --
       return buff
 
