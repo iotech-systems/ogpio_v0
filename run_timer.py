@@ -74,9 +74,12 @@ def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
 # (ser: serial.Serial, unit_adr: int, relay: int, val: int)
 def main():
    # -- --
-   ser = get_comm(mb_adr=MODBUS_ADR, bdr=_bdr, par=_par)
-   if ser is None:
-      exit(22)
+   if _prt.lower() == "auto":
+      ser = get_comm(mb_adr=MODBUS_ADR, bdr=_bdr, par=_par)
+      if ser is None:
+         exit(22)
+   else:
+      ser = serial.Serial(port=_prt, baudrate=_bdr, parity=_par)
    # -- --
    board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=MODBUS_ADR)
    print(f"\n- - - [ SETTING MODBUS_ADR: {MODBUS_ADR} ] - - -\n")
