@@ -80,7 +80,7 @@ class lctech4chModbus(modbusBoard):
       mb.__send__(outbuff)
       resp: bytearray = mb.__read__()
       bdr_code = lctech4chModbus.baudrates[ser.baudrate]
-      if (len(resp) > 6) and (resp[5] == bdr_code):
+      if (len(resp) > 6) and (resp[4] == bdr_code):
          rval, msg = True, "GOOD_PONG"
       else:
          rval, msg = False, "BAD_PONG"
