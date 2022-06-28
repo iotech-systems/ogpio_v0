@@ -2,9 +2,9 @@
 <rtmr>
    <!-- ./run_timer.py auto 9600 N 0 sunset sunrise -->
    <modbus ttydev=";auto;9600;N;8;1;" address="8">
-      <gpio id="1" on="sunset" off="sunrise" note="kasetony" />
-      <gpio id="2" on="sunset" off="01:00" note="" />
-      <gpio id="3" on="sunset" off="" note="" />
-      <gpio id="4" on="noon" off="" note="" />
+      <gpio enabled="on" id="1" on="sunset" off="sunrise" note="kasetony" />
+      <gpio enabled="on" id="2" on="sunset" off="01:00" note="some note string" />
+      <gpio enabled="off" id="3" on="sunset" off="" note="" />
+      <gpio enabled="off" id="4" on="noon" off="" note="" />
    </modbus>
 </rtmr>

@@ -82,6 +82,8 @@ def while_loop(ser: serial.Serial):
       # -- for each gpio --
       for gpio in MB_INFO.gpios:
          print(gpio)
+         if not gpio.enabled:
+            continue
          set_channel(ser, MB_INFO.address, gpio.id, gpio.on, gpio.off)
       # -- sleep a bit --
       time.sleep(16.0)
