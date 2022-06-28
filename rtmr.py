@@ -77,9 +77,9 @@ def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
       print(e)
 
 def per_gpio(ser: serial.Serial, gpio: modbusGPIO):
-   print(gpio)
    if not gpio.enabled:
       return
+   print(gpio)
    set_channel(ser, MB_INFO.address, gpio.id, gpio.on, gpio.off)
    time.sleep(2.0)
 
@@ -90,7 +90,7 @@ def while_loop(ser: serial.Serial):
       for gpio in MB_INFO.gpios:
          per_gpio(ser, gpio)
       # -- sleep a bit --
-      time.sleep(16.0)
+      time.sleep(8.0)
 
 # (ser: serial.Serial, unit_adr: int, relay: int, val: int)
 def main():
