@@ -49,6 +49,5 @@ class clock(object):
       else:
          raise Exception(f"BadTimeFormat: {tme}")
       # -- --
-      hr: int = int(hr)
-      mn: int = int(mn)
+      hr: int = int(hr); mn: int = int(mn)
       return datetime.time(hour=hr, minute=mn, second=0, microsecond=0)
