@@ -41,9 +41,9 @@ if ttXML.load() != 0:
 
 
 # -- load modbus node --
-mbInfo: modbusInfo = ttXML.get_modbusInfo()
-print(f"\n\t-- [ ttydev.buff: {mbInfo.ttydev.buff} ] --\n")
-mbInfo.load_gpios()
+MB_INFO: modbusInfo = ttXML.get_modbusInfo()
+print(f"\n\t-- [ ttydev.buff: {MB_INFO.ttydev.buff} ] --\n")
+MB_INFO.load_gpios()
 
 
 def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
@@ -62,44 +62,50 @@ def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
    return ser
 
 def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
-   # -- run --
-   sun_clock = sunClock(LOC_INFO)
-   board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
-   if ont in DAY_PARTS:
-      ont = sun_clock.get_time(ont)
-   if oft in DAY_PARTS:
-      oft = sun_clock.get_time(oft)
-   # -- run --
-   chnl_state: bool = clock.get_state(ont, oft)
-   print(f"\t[ new chnl_state: {chnl_state} ]")
-   board.set_channel(chnl, chnl_state)
+   try:
+      sun_clock = sunClock(LOC_INFO)
+      board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
+      if ont in DAY_PARTS:
+         ont = sun_clock.get_time(ont)
+      if oft in DAY_PARTS:
+         oft = sun_clock.get_time(oft)
+      # -- run --
+      chnl_state: bool = clock.get_state(ont, oft)
+      print(f"\t[ new chnl_state: {chnl_state} ]")
+      board.set_channel(chnl, chnl_state)
+   except Exception as e:
+      print(e)
+
+def while_loop(ser: serial.Serial):
+   print("\n-- [ while_loop ] --\n")
+   while True:
+      # -- for each gpio --
+      for gpio in MB_INFO.gpios:
+         print(gpio)
+         set_channel(ser, MB_INFO.address, gpio.id, gpio.on, gpio.off)
+      # -- sleep a bit --
+      time.sleep(16.0)
 
 # (ser: serial.Serial, unit_adr: int, relay: int, val: int)
 def main():
    # -- --
-   port: ttyDev = mbInfo.ttydev
+   port: ttyDev = MB_INFO.ttydev
    if port.dev == "auto":
-      ser = get_comm(mb_adr=mbInfo.address, bdr=port.baud, par=port.parity)
+      ser = get_comm(mb_adr=MB_INFO.address, bdr=port.baud, par=port.parity)
       if ser is None:
          exit(22)
    else:
       ser = serial.Serial(port=port.dev, baudrate=port.baud, parity=port.parity)
    # -- --
    print(f"\n\tusing ser. port: {ser}\n")
-   board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mbInfo.address)
-   print(f"\n- - - [ SETTING MODBUS_ADR: {mbInfo.address} ] - - -\n")
-   board.set_bus_address(0, mbInfo.address)
+   board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=MB_INFO.address)
+   print(f"\n- - - [ SETTING MODBUS_ADR: {MB_INFO.address} ] - - -\n")
+   board.set_bus_address(0, MB_INFO.address)
    print("\n- - - [ SETTING ALL OFF ] - - -\n")
    board.set_all_channels(False)
    time.sleep(4.0)
    # -- loop --
-   while True:
-      # -- for each gpio --
-      for gpio in mbInfo.gpios:
-         print(gpio)
-         set_channel(ser, mbInfo.address, _chl, _ont, _oft)
-      # -- sleep a bit --
-      time.sleep(16.0)
+   while_loop(ser)
 
 
 # -- start --
