@@ -43,6 +43,7 @@ if ttXML.load() != 0:
 # -- load modbus node --
 mbInfo: modbusInfo = ttXML.get_modbusInfo()
 print(f"\n\t-- [ ttydev.buff: {mbInfo.ttydev.buff} ] --\n")
+mbInfo.load_gpios()
 
 
 def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
