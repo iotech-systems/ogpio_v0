@@ -41,7 +41,14 @@ class clock(object):
       if isinstance(tme, datetime.time):
          return tme
       # -- parse string --
-      hr, mn, _ = tme.split(":")
+      arr = tme.split(":")
+      if len(arr) == 2:
+         hr, mn = tme.split(":")
+      elif len(arr) == 3:
+         hr, mn, _ = tme.split(":")
+      else:
+         raise Exception(f"BadTimeFormat: {tme}")
+      # -- --
       hr: int = int(hr)
       mn: int = int(mn)
       return datetime.time(hour=hr, minute=mn, second=0, microsecond=0)
