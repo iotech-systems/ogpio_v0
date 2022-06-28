@@ -9,10 +9,10 @@ from core.sunclock import *
 from utils.sysUtils import sysUtils
 from datatypes.timetableXml import timetableXml
 from datatypes.modbusInfo import modbusInfo
+from datatypes.modbusGPIO import modbusGPIO
 from datatypes.ttyDev import ttyDev
 
 
-MODBUS_ADR = 8
 LOC_INFO: locationTxtInfo = locationTxtInfo("location.txt")
 LOC_INFO.load()
 
@@ -76,16 +76,19 @@ def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
    except Exception as e:
       print(e)
 
+def per_gpio(ser: serial.Serial, gpio: modbusGPIO):
+   print(gpio)
+   if not gpio.enabled:
+      return
+   set_channel(ser, MB_INFO.address, gpio.id, gpio.on, gpio.off)
+   time.sleep(2.0)
+
 def while_loop(ser: serial.Serial):
    print("\n-- [ while_loop ] --\n")
    while True:
       # -- for each gpio --
       for gpio in MB_INFO.gpios:
-         print(gpio)
-         if not gpio.enabled:
-            continue
-         set_channel(ser, MB_INFO.address, gpio.id, gpio.on, gpio.off)
-         time.sleep(2.0)
+         per_gpio(ser, gpio)
       # -- sleep a bit --
       time.sleep(16.0)
 
