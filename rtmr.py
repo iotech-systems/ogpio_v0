@@ -39,12 +39,10 @@ if ttXML.load() != 0:
    print(f"UnableToLoadXmlFile: {_timetable_xml}")
    exit(1)
 
+
 # -- load modbus node --
 mbInfo: modbusInfo = ttXML.get_modbusInfo()
-
-
-
-print(f"\n\t-- [ ttydev: ] --\n")
+print(f"\n\t-- [ ttydev.buff: {mbInfo.ttydev.buff} ] --\n")
 
 
 def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
@@ -86,6 +84,7 @@ def main():
    else:
       ser = serial.Serial(port=port.dev, baudrate=port.baud, parity=port.parity)
    # -- --
+   print(f"\n\tusing ser. port: {ser}\n")
    board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mbInfo.address)
    print(f"\n- - - [ SETTING MODBUS_ADR: {mbInfo.address} ] - - -\n")
    board.set_bus_address(0, mbInfo.address)
@@ -94,9 +93,12 @@ def main():
    time.sleep(4.0)
    # -- loop --
    while True:
-      # -- use global variables --
-      set_channel(ser, MODBUS_ADR, _chl, _ont, _oft)
-      time.sleep(8.0)
+      # -- for each gpio --
+      for gpio in mbInfo.gpios:
+         print(gpio)
+         set_channel(ser, mbInfo.address, _chl, _ont, _oft)
+      # -- sleep a bit --
+      time.sleep(16.0)
 
 
 # -- start --
