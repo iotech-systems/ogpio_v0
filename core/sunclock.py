@@ -10,6 +10,7 @@ from core.locationTxtInfo import locationTxtInfo
 """
 DAY_PARTS = ("dawn", "sunrise", "noon", "sunset", "dusk")
 RGX = r"(dawn|sunrise|noon|sunset|dusk)([\+|\-][0-9]{2})"
+MAX_OFFSET = 59
 
 
 class sunClock(object):
@@ -22,6 +23,10 @@ class sunClock(object):
          , latitude=self.locInfo.lat(), longitude=self.locInfo.lng())
 
    def get_time(self, day_part, offset: int = 0):
+      # -- test max offset --
+      if abs(offset) > MAX_OFFSET:
+         raise f"BadMaxOffset: {offset}"
+      # -- run --
       dt: datetime.datetime = self.get_datetime(day_part)
       delta = datetime.timedelta(minutes=offset)
       dt_delta = (dt + delta)
