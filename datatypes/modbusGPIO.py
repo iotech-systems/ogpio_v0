@@ -14,5 +14,5 @@ class modbusGPIO(object):
       self.note: str = elmt.attrib["note"]
 
    def __str__(self):
-      return f"gpio id: enabled: {self.enabled} | {self.id} | " \
-         f"on: {self.on} | off: {self.off} | note: {self.note}"
+      return f"\t[ gpio enabled: {self.enabled} | id: {self.id} | " \
+         f"on: {self.on} | off: {self.off} | note: {self.note} ]"
