@@ -25,7 +25,7 @@ class sunClock(object):
    def get_time(self, day_part, offset: int = 0):
       # -- test max offset --
       if abs(offset) > MAX_OFFSET:
-         raise f"BadMaxOffset: {offset}"
+         raise Exception(f"BadMaxOffset: {offset}")
       # -- run --
       dt: datetime.datetime = self.get_datetime(day_part)
       delta = datetime.timedelta(minutes=offset)
