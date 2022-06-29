@@ -1,6 +1,7 @@
 
 import time
 import serial
+from core.sysutils import sysutils
 
 
 class modbusBoard(object):
@@ -36,26 +37,34 @@ class modbusBoard(object):
       return self.ser_port
 
    def __send__(self, outbuff: bytearray) -> int:
-      ser: serial.Serial = self.__ser_port__()
-      print(f" <<< SENDING: {outbuff}")
-      cnt = ser.write(outbuff)
-      ser.flush()
-      # -- sleep 20 ms --
-      time.sleep(0.02)
-      return cnt
+      try:
+         ser: serial.Serial = self.__ser_port__()
+         print(f" <<< SENDING: {outbuff}")
+         cnt = ser.write(outbuff)
+         ser.flush()
+         # -- sleep 20 ms --
+         time.sleep(0.02)
+         return cnt
+      except Exception as e:
+         sysutils.log_error(str(e))
+         return 0
 
    def __send_ser__(self, ser: serial.Serial, outbuff: bytearray):
       self.ser_port = ser
       self.__send__(outbuff)
 
    def __read__(self) -> [None, bytearray]:
-      ser: serial.Serial = self.__ser_port__()
-      ser.timeout = modbusBoard.readDelay
-      inbuff: bytearray = bytearray()
-      while True:
-         inbuff.extend(ser.read(1))
-         if ser.in_waiting == 0:
-            break
-      print(f" >>>>>> RESP: {inbuff}")
-      # -- return --
-      return inbuff
+      try:
+         ser: serial.Serial = self.__ser_port__()
+         ser.timeout = modbusBoard.readDelay
+         inbuff: bytearray = bytearray()
+         while True:
+            inbuff.extend(ser.read(1))
+            if ser.in_waiting == 0:
+               break
+         print(f" >>>>>> RESP: {inbuff}")
+         # -- return --
+         return inbuff
+      except Exception as e:
+         sysutils.log_error(str(e))
+         return None
