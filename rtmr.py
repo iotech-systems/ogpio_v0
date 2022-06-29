@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-import re
 
-import serial, sys, time, os.path
+import serial, sys, time, os.path, re
 from interfaces.modbusBoard import modbusBoard
 from boards.lctech4chModbus import lctech4chModbus
 from core.clock import clock
@@ -69,11 +68,11 @@ def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
       m_ont = re.match(RGX, ont)
       m_oft = re.match(RGX, oft)
       # -- --
-      if len(m_ont.groups()) == 2:
+      if (m_ont is not None) and (len(m_ont.groups()) == 2):
          g0_ont, g1_ont = m_ont.groups()
          ont = g0_ont.strip()
          ont_offset = int(g1_ont.strip())
-      if len(m_oft.groups()) == 2:
+      if (m_oft is not None) and (len(m_oft.groups()) == 2):
          g0_oft, g1_oft = m_ont.groups()
          oft = g0_oft.strip()
          oft_offset = int(g1_oft.strip())
