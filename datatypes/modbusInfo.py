@@ -15,7 +15,7 @@ class modbusInfo(object):
       self.load_gpios()
 
    def load_gpios(self):
-      xpath: str = "gpio"
+      xpath: str = "gpio[@enabled=\"on\"]"
       lst: t.List[et.Element] = self.elmt.findall(xpath)
       self.gpios.clear()
       for elmt in lst:
