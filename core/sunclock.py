@@ -24,7 +24,7 @@ class sunClock(object):
    def get_time(self, day_part, offset: int = 0):
       dt: datetime.datetime = self.get_datetime(day_part)
       delta = datetime.timedelta(minutes=offset)
-      dt_delta = (dt - delta)
+      dt_delta = (dt + delta)
       print(f"dt: {dt} | dt_delta: {dt_delta} | offset: {offset}")
       return dt_delta.time()
 
