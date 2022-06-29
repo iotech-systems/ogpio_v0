@@ -10,7 +10,8 @@ class fileMonitor(object):
       self.__prev_stamp__ = 0
       self.__callback__ = None
       self.run_flag = True
-      self.fileChanged: bool = False
+      self.file_changed: bool = False
+      self.extFileChangeFlag: bool = False
       self.__thr = threading.Thread(target=self.__mon_file__)
 
    def start(self):
@@ -31,13 +32,14 @@ class fileMonitor(object):
             stamp = os.stat(self.path).st_mtime
             if stamp != self.__prev_stamp__:
                self.__prev_stamp__ = stamp
-               self.fileChanged = True
+               self.file_changed = True
+               self.extFileChangeFlag = True
                if self.__callback__ is None:
                   print(f"PathChangeEvent: {self.path}")
                else:
                   self.__callback__()
             else:
-               self.fileChanged = False
+               self.file_changed = False
          except Exception as e:
             print(e)
          finally:

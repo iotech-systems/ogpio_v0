@@ -14,7 +14,7 @@ from core.fileMonitor import fileMonitor
 from datatypes.ttyDev import ttyDev
 
 
-ttXML = None
+TT_XML = None
 MB_INFO = None
 LOC_INFO: locationTxtInfo = locationTxtInfo("location.txt")
 LOC_INFO.load()
@@ -48,14 +48,14 @@ print(f"\n\n\t-- [ run-timer ] - -\n\t- - [ {_src_file} ] - -")
 
 def load_xml_conf_file():
    # -- load xml config --
-   global ttXML
-   ttXML = timetableXml(_timetable_xml)
-   if ttXML.load() != 0:
+   global TT_XML
+   TT_XML = timetableXml(_timetable_xml)
+   if TT_XML.load() != 0:
       print(f"UnableToLoadXmlFile: {_timetable_xml}")
       exit(1)
    # -- load modbus node --
    global MB_INFO
-   MB_INFO = ttXML.get_modbusInfo()
+   MB_INFO = TT_XML.get_modbusInfo()
    print(f"\n\t-- [ ttydev.buff: {MB_INFO.ttydev.buff} ] --\n")
    MB_INFO.load_gpios()
 
@@ -114,8 +114,10 @@ def per_gpio(ser: serial.Serial, gpio: modbusGPIO):
 def while_loop(ser: serial.Serial):
    print("\n-- [ while_loop ] --\n")
    while True:
-      if fileMon.fileChanged:
+      # -- check xml file --
+      if fileMon.extFileChangeFlag:
          load_xml_conf_file()
+         fileMon.extFileChangeFlag = False
       # -- for each gpio --
       mb_info: modbusInfo = MB_INFO
       for gpio in mb_info.gpios:
@@ -124,7 +126,10 @@ def while_loop(ser: serial.Serial):
       time.sleep(8.0)
 
 def main():
+   # -- load xml file --
    load_xml_conf_file()
+   fileMon.extFileChangeFlag = False
+   # -- run --
    port: ttyDev = MB_INFO.ttydev
    if port.dev == "auto":
       ser = get_comm(mb_adr=MB_INFO.address, bdr=port.baud, par=port.parity)
