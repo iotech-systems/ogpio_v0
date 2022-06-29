@@ -17,5 +17,6 @@ class modbusInfo(object):
    def load_gpios(self):
       xpath: str = "gpio"
       lst: t.List[et.Element] = self.elmt.findall(xpath)
+      self.gpios.clear()
       for elmt in lst:
          self.gpios.append(modbusGPIO(elmt))
