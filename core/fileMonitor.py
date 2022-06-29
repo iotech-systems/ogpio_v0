@@ -30,6 +30,7 @@ class fileMonitor(object):
          try:
             stamp = os.stat(self.path).st_mtime
             if stamp != self.__prev_stamp__:
+               self.__prev_stamp__ = stamp
                self.fileChanged = True
                if self.__callback__ is None:
                   print(f"PathChangeEvent: {self.path}")
