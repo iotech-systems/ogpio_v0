@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
-import serial, sys, time, os.path, re
+import setproctitle
+import serial, sys, time, os.path
 from interfaces.modbusBoard import modbusBoard
 from boards.lctech4chModbus import lctech4chModbus
 from core.clock import clock
@@ -128,4 +129,6 @@ def main():
 
 # -- start --
 if __name__ == "__main__":
+   PROC_NAME = "ogpio::rtmr"
+   setproctitle.setproctitle(PROC_NAME)
    main()
