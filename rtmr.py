@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-import os.path
+import re
 
-import serial, sys, time
+import serial, sys, time, os.path
 from interfaces.modbusBoard import modbusBoard
 from boards.lctech4chModbus import lctech4chModbus
 from core.clock import clock
@@ -63,15 +63,30 @@ def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
 
 def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
    try:
+      ont_offset: int = 0
+      oft_offset: int = 0
+      # -- test for time offset --
+      m_ont = re.match(RGX, ont)
+      m_oft = re.match(RGX, oft)
+      # -- --
+      if len(m_ont.groups()) == 2:
+         g0_ont, g1_ont = m_ont.groups()
+         ont = g0_ont.strip()
+         ont_offset = int(g1_ont.strip())
+      if len(m_oft.groups()) == 2:
+         g0_oft, g1_oft = m_ont.groups()
+         oft = g0_oft.strip()
+         oft_offset = int(g1_oft.strip())
+      # -- --
       sun_clock = sunClock(LOC_INFO)
-      board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
       if ont in DAY_PARTS:
-         ont = sun_clock.get_time(ont)
+         ont = sun_clock.get_time(ont, ont_offset)
       if oft in DAY_PARTS:
-         oft = sun_clock.get_time(oft)
-      # -- run --
+         oft = sun_clock.get_time(oft, oft_offset)
+      # - - - run - - -
       chnl_state: bool = clock.get_state(ont, oft)
       print(f"\t[ new chnl_state: {chnl_state} ]")
+      board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
       board.set_channel(chnl, chnl_state)
    except Exception as e:
       print(e)
@@ -92,9 +107,7 @@ def while_loop(ser: serial.Serial):
       # -- sleep a bit --
       time.sleep(8.0)
 
-# (ser: serial.Serial, unit_adr: int, relay: int, val: int)
 def main():
-   # -- --
    port: ttyDev = MB_INFO.ttydev
    if port.dev == "auto":
       ser = get_comm(mb_adr=MB_INFO.address, bdr=port.baud, par=port.parity)

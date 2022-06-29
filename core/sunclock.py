@@ -1,5 +1,6 @@
 
-import datetime, astral, pytz
+import re, pytz
+import datetime, astral
 from astral.sun import sun
 from core.locationTxtInfo import locationTxtInfo
 
@@ -8,6 +9,7 @@ from core.locationTxtInfo import locationTxtInfo
    dawn, sunrise, noon, sunset, dusk
 """
 DAY_PARTS = ("dawn", "sunrise", "noon", "sunset", "dusk")
+RGX = r"(dawn|sunrise|noon|sunset|dusk)([\+|\-][0-9]{2})"
 
 
 class sunClock(object):
@@ -19,9 +21,10 @@ class sunClock(object):
          , region=self.locInfo.region(), timezone=self.locInfo.tz()
          , latitude=self.locInfo.lat(), longitude=self.locInfo.lng())
 
-   def get_time(self, day_part):
+   def get_time(self, day_part, offset: int = 0):
       dt: datetime.datetime = self.get_datetime(day_part)
-      return dt.time()
+      delta = datetime.timedelta(minutes=offset)
+      return (dt - delta).time()
 
    def get_datetime(self, day_part) -> datetime.datetime:
       if day_part not in DAY_PARTS:
