@@ -10,9 +10,12 @@ from utils.sysUtils import sysUtils
 from datatypes.timetableXml import timetableXml
 from datatypes.modbusInfo import modbusInfo
 from datatypes.modbusGPIO import modbusGPIO
+from core.fileMonitor import fileMonitor
 from datatypes.ttyDev import ttyDev
 
 
+ttXML = None
+MB_INFO = None
 LOC_INFO: locationTxtInfo = locationTxtInfo("location.txt")
 LOC_INFO.load()
 
@@ -31,20 +34,30 @@ if not os.path.exists(_timetable_xml):
    print(f"\n\t[ FileNotFound: {_timetable_xml} ]\n")
    exit(1)
 
+
+def on_conf_change():
+   print("on_conf_change")
+
+
+fileMon: fileMonitor = fileMonitor(_timetable_xml)
+fileMon.set_callback(None)
+fileMon.start()
+
 print(f"\n\n\t-- [ run-timer ] - -\n\t- - [ {_src_file} ] - -")
 
-# -- load xml config --
-ttXML: timetableXml = timetableXml(_timetable_xml)
-if ttXML.load() != 0:
-   print(f"UnableToLoadXmlFile: {_timetable_xml}")
-   exit(1)
 
-
-# -- load modbus node --
-MB_INFO: modbusInfo = ttXML.get_modbusInfo()
-print(f"\n\t-- [ ttydev.buff: {MB_INFO.ttydev.buff} ] --\n")
-MB_INFO.load_gpios()
-
+def load_xml_conf_file():
+   # -- load xml config --
+   global ttXML
+   ttXML = timetableXml(_timetable_xml)
+   if ttXML.load() != 0:
+      print(f"UnableToLoadXmlFile: {_timetable_xml}")
+      exit(1)
+   # -- load modbus node --
+   global MB_INFO
+   MB_INFO = ttXML.get_modbusInfo()
+   print(f"\n\t-- [ ttydev.buff: {MB_INFO.ttydev.buff} ] --\n")
+   MB_INFO.load_gpios()
 
 def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
    # -- auto detect com port --
@@ -101,13 +114,17 @@ def per_gpio(ser: serial.Serial, gpio: modbusGPIO):
 def while_loop(ser: serial.Serial):
    print("\n-- [ while_loop ] --\n")
    while True:
+      if fileMon.fileChanged:
+         load_xml_conf_file()
       # -- for each gpio --
-      for gpio in MB_INFO.gpios:
+      mb_info: modbusInfo = MB_INFO
+      for gpio in mb_info.gpios:
          per_gpio(ser, gpio)
       # -- sleep a bit --
       time.sleep(8.0)
 
 def main():
+   load_xml_conf_file()
    port: ttyDev = MB_INFO.ttydev
    if port.dev == "auto":
       ser = get_comm(mb_adr=MB_INFO.address, bdr=port.baud, par=port.parity)
