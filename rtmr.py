@@ -47,7 +47,6 @@ print(f"\n\n\t-- [ run-timer ] - -\n\t- - [ {_src_file} ] - -")
 
 
 def load_xml_conf_file():
-   # -- load xml config --
    global TT_XML
    TT_XML = timetableXml(_timetable_xml)
    if TT_XML.load() != 0:
