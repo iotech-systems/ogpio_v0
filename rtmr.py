@@ -76,28 +76,12 @@ def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
 
 def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
    try:
-      ont_offset: int = 0
-      oft_offset: int = 0
-      # -- test for time offset --
-      m_ont = re.match(RGX, ont)
-      m_oft = re.match(RGX, oft)
-      # -- --
-      if (m_ont is not None) and (len(m_ont.groups()) == 2):
-         g0_ont, g1_ont = m_ont.groups()
-         ont = g0_ont.strip()
-         ont_offset = int(g1_ont.strip())
-      if (m_oft is not None) and (len(m_oft.groups()) == 2):
-         g0_oft, g1_oft = m_ont.groups()
-         oft = g0_oft.strip()
-         oft_offset = int(g1_oft.strip())
       # -- --
       sun_clock = sunClock(LOC_INFO)
-      if ont in DAY_PARTS:
-         ont = sun_clock.get_time(ont, ont_offset)
-      if oft in DAY_PARTS:
-         oft = sun_clock.get_time(oft, oft_offset)
+      on_time = sun_clock.get_time_v1(ont)
+      off_time = sun_clock.get_time_v1(oft)
       # - - - run - - -
-      chnl_state: bool = clock.get_state(ont, oft)
+      chnl_state: bool = clock.get_state(on_time, off_time)
       print(f"\t[ current chnl_state: {chnl_state} ]\n\n")
       board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
       board.set_channel(chnl, chnl_state)
