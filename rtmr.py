@@ -98,7 +98,7 @@ def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
          oft = sun_clock.get_time(oft, oft_offset)
       # - - - run - - -
       chnl_state: bool = clock.get_state(ont, oft)
-      print(f"\t[ new chnl_state: {chnl_state} ]")
+      print(f"\t[ current chnl_state: {chnl_state} ]\n\n")
       board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
       board.set_channel(chnl, chnl_state)
    except Exception as e:
