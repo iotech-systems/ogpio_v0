@@ -42,7 +42,6 @@ def on_conf_change():
 fileMon: fileMonitor = fileMonitor(_timetable_xml)
 fileMon.set_callback(None)
 fileMon.start()
-
 print(f"\n\n\t-- [ run-timer ] - -\n\t- - [ {_src_file} ] - -")
 
 
@@ -52,6 +51,8 @@ def load_xml_conf_file():
    if TT_XML.load() != 0:
       print(f"UnableToLoadXmlFile: {_timetable_xml}")
       exit(1)
+   # -- print tt --
+   TT_XML.pprint()
    # -- load modbus node --
    global MB_INFO
    MB_INFO = TT_XML.get_modbusInfo()

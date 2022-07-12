@@ -6,8 +6,8 @@
             note="kasetony" />
       <gpio enabled="on" id="1" lbl="CH2" on="sunset" off="sunrise"
             note="some note string" />
-      <gpio enabled="off" id="2" lbl="CH3" on="sunset-30" off="sunrise"
+      <gpio enabled="on" id="2" lbl="CH3" on="sunset-45" off="sunrise+45"
             note="lights over stairwell entrance" />
-      <gpio enabled="off" id="3" lbl="CH4" on="noon" off="" note="" />
+      <gpio enabled="off" id="3" lbl="CH4" on="noon" off="noon+1" note="off" />
    </modbus>
 </rtmr>
