@@ -44,6 +44,12 @@ fileMon.set_callback(None)
 fileMon.start()
 print(f"\n\n\t-- [ run-timer ] - -\n\t- - [ {_src_file} ] - -")
 
+# -- make dir in /run --
+run_iotech_gpio = "/run/iotech/ogpio"
+os.makedirs(run_iotech_gpio)
+if os.path.exists(run_iotech_gpio):
+   print(f"PathFound: {run_iotech_gpio}")
+
 
 def load_xml_conf_file():
    global TT_XML
@@ -91,7 +97,6 @@ def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
 def per_gpio(ser: serial.Serial, gpio: modbusGPIO):
    if not gpio.enabled:
       return
-   print(gpio)
    set_channel(ser, MB_INFO.address, gpio.id, gpio.on, gpio.off)
    time.sleep(2.0)
 
@@ -107,6 +112,10 @@ def while_loop(ser: serial.Serial):
       for gpio in mb_info.gpios:
          per_gpio(ser, gpio)
       # -- sleep a bit --
+      sun_fl = f"/run/iotech/ogpio/sun.dump"
+      with open(sun_fl, "w") as f:
+         f.write(TT_XML.pprint())
+      # -- THE END --
       time.sleep(8.0)
 
 def main():

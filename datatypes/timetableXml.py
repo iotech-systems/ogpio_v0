@@ -3,7 +3,6 @@ import os.path
 import typing as t
 import xml.etree.ElementTree as et
 from datatypes.modbusInfo import modbusInfo
-from core.locationTxtInfo import *
 from core.sunclock import *
 from core.clock import clock
 
@@ -49,3 +48,6 @@ class timetableXml(object):
                   {"".join(arr)}     
            """
       print(buff1)
+      # -- return --
+      return buff1
+
