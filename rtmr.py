@@ -46,7 +46,9 @@ print(f"\n\n\t-- [ run-timer ] - -\n\t- - [ {_src_file} ] - -")
 
 # -- make dir in /run --
 run_iotech_gpio = "/run/iotech/ogpio"
-os.makedirs(run_iotech_gpio)
+if not os.path.exists(run_iotech_gpio):
+   os.makedirs(run_iotech_gpio)
+# -- --
 if os.path.exists(run_iotech_gpio):
    print(f"PathFound: {run_iotech_gpio}")
 
