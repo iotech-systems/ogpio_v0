@@ -30,7 +30,7 @@ class timetableXml(object):
       LOC_INFO.load()
       sclk = sunClock(loc_info=LOC_INFO)
       # -- --
-      arr = [f"\n\t\t{sclk}"]
+      arr = [f"\n\t{sclk}"]
       for gpio in gpios:
          # <gpio enabled="on" id="0" lbl="CH1" on="sunset" off="sunrise" note="kasetony" />
          enb = gpio.attrib["enabled"]; id = gpio.attrib["id"]
@@ -38,16 +38,12 @@ class timetableXml(object):
          toff = gpio.attrib["off"]; note = gpio.attrib["note"]
          dton = sclk.get_time_v1(ton); dtoff = sclk.get_time_v1(toff)
          state = clock.get_state(dton, dtoff)
-         _msg = f"\n\t\tGPIO [ enabled: {enb} | id: {id} | lbl: {lbl} | on: {ton} / {dton} |" \
+         _msg = f"\n\tGPIO [ enabled: {enb} | id: {id} | lbl: {lbl} | on: {ton} / {dton} |" \
             f" off: {toff} / {dtoff} | state: {state} ]"
          arr.append(_msg)
       # -- print buffer --
-      buff1 = f"""
+      return f"""
               - - - [ timetable ] - - -
                   file: {self.path}
-                  {"".join(arr)}     
-           """
-      print(buff1)
-      # -- return --
-      return buff1
-
+                  {"".join(arr)}
+         """

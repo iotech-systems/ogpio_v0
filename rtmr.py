@@ -60,7 +60,7 @@ def load_xml_conf_file():
       print(f"UnableToLoadXmlFile: {_timetable_xml}")
       exit(1)
    # -- print tt --
-   TT_XML.pprint()
+   print(TT_XML.pprint())
    # -- load modbus node --
    global MB_INFO
    MB_INFO = TT_XML.get_modbusInfo()
