@@ -43,9 +43,9 @@ class clock(object):
       # -- parse string --
       arr = tme.split(":")
       if len(arr) == 2:
-         hr, mn = tme.split(":")
+         hr, mn = arr
       elif len(arr) == 3:
-         hr, mn, _ = tme.split(":")
+         hr, mn, _ = arr
       else:
          raise Exception(f"BadTimeFormat: {tme}")
       # -- --

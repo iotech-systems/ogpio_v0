@@ -7,6 +7,7 @@ from boards.lctech4chModbus import lctech4chModbus
 from core.clock import clock
 from core.sunclock import *
 from utils.sysUtils import sysUtils
+from datatypes.gpioState import gpioState
 from datatypes.timetableXml import timetableXml
 from datatypes.modbusInfo import modbusInfo
 from datatypes.modbusGPIO import modbusGPIO
@@ -84,12 +85,13 @@ def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
 
 def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
    try:
-      # -- --
+      """ -- --
       sun_clock = sunClock(LOC_INFO)
       on_time = sun_clock.get_time_v1(ont)
-      off_time = sun_clock.get_time_v1(oft)
+      off_time = sun_clock.get_time_v1(oft) """
       # - - - run - - -
-      chnl_state: bool = clock.get_state(on_time, off_time)
+      gpio_state = gpioState(ont, oft)
+      chnl_state: bool = gpio_state.calc_current_state(activeState=True)
       print(f"\t[ current chnl_state: {chnl_state} ]\n\n")
       board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
       board.set_channel(chnl, chnl_state)

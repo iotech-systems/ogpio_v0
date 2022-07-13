@@ -2,7 +2,7 @@
 import re, pytz
 import datetime, astral
 from astral.sun import sun
-from core.locationTxtInfo import locationTxtInfo
+from core.locationTxtInfo import *
 
 
 """
@@ -15,7 +15,17 @@ MAX_OFFSET = 59
 
 class sunClock(object):
 
-   def __init__(self, loc_info: locationTxtInfo):
+   @staticmethod
+   def is_sun_format(tmStr: str) -> bool:
+      for dp in DAY_PARTS:
+         if tmStr.lower().startswith(dp.lower()):
+            return True
+      # -- --
+      return False
+
+   def __init__(self, loc_info: locationTxtInfo = None):
+      if loc_info is None:
+         loc_info = DEFAULT_LOC_INFO
       self.locInfo: locationTxtInfo = loc_info
       # -- set location --
       self.city = astral.LocationInfo(self.locInfo.location()

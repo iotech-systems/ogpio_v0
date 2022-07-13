@@ -1,5 +1,4 @@
 
-
 class locationTxtInfo:
 
    def __init__(self, path: str):
@@ -39,3 +38,10 @@ class locationTxtInfo:
          return self.data[key]
       else:
          return None
+
+
+"""
+   DEFAULT_LOC_INFO locaiton loaded from working folder
+"""
+DEFAULT_LOC_INFO: locationTxtInfo = locationTxtInfo("location.txt")
+DEFAULT_LOC_INFO.load()
