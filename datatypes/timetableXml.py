@@ -37,9 +37,9 @@ class timetableXml(object):
          lbl = gpio.attrib["lbl"]; ton = gpio.attrib["on"]
          toff = gpio.attrib["off"]; note = gpio.attrib["note"]
          dton = sclk.get_time_v1(ton); dtoff = sclk.get_time_v1(toff)
-         state = clock.get_state(dton, dtoff)
-         _msg = f"\n\tGPIO [ enabled: {enb} | id: {id} | lbl: {lbl} | on: {ton} / {dton} |" \
-            f" off: {toff} / {dtoff} | state: {state} ]"
+         state = "1" if (clock.get_state(dton, dtoff)) else "0"
+         _msg = f"\n\tGPIO [ enabled: {enb} | id: {id} | calc_state: {state} | lbl: {lbl}" \
+            f" | on: {ton} / {dton} | off: {toff} / {dtoff} | note: {note} ]"
          arr.append(_msg)
       # -- print buffer --
       tbl = "".join(arr)
