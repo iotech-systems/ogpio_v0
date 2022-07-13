@@ -38,8 +38,8 @@ class timetableXml(object):
          toff = gpio.attrib["off"]; note = gpio.attrib["note"]
          dton = sclk.get_time_v1(ton); dtoff = sclk.get_time_v1(toff)
          state = "1" if (clock.get_state(dton, dtoff)) else "0"
-         _msg = f"\n\tGPIO [ enabled: {enb} | id: {id} | calc_state: {state} | lbl: {lbl}" \
-            f" | on: {ton} / {dton} | off: {toff} / {dtoff} | note: {note} ]"
+         _msg = f"\n\tGPIO [ enabled: {enb} | id: {id} | calc_state: {state} |" \
+            f" lbl: {lbl} | on: {ton} / {dton} | off: {toff} / {dtoff} ]"
          arr.append(_msg)
       # -- print buffer --
       tbl = "".join(arr)
