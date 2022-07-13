@@ -5,6 +5,7 @@ import xml.etree.ElementTree as et
 from datatypes.modbusInfo import modbusInfo
 from core.sunclock import *
 from core.clock import clock
+from datatypes.gpioState import gpioState
 
 
 class timetableXml(object):
@@ -29,18 +30,22 @@ class timetableXml(object):
       LOC_INFO: locationTxtInfo = locationTxtInfo("location.txt")
       LOC_INFO.load()
       sclk = sunClock(loc_info=LOC_INFO)
+      clk = clock()
       # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
       # <gpio enabled="on" id="0" lbl="CH1" on="sunset" off="sunrise" note="kasetony" />
       arr = [f"\n\t{sclk}"]
       for gpio in gpios:
-         enb = "{:3s}".format(gpio.attrib["enabled"]); id = gpio.attrib["id"]
-         lbl = gpio.attrib["lbl"]; ton = gpio.attrib["on"]
-         toff = gpio.attrib["off"]; note = gpio.attrib["note"]
-         dton = sclk.get_time_v1(ton); dtoff = sclk.get_time_v1(toff)
-         _on = "{:20s}".format(f"{ton}/{dton}")
-         _off = "{:20s}".format(f"{toff}/{dtoff}")
-         state = "1" if (clock.get_state(dton, dtoff)) else "0"
-         _msg = f"\n\tGPIO [ enabled: {enb} | id: {id} | calc_state: {state} |" \
+         _id = gpio.attrib["id"]
+         lbl = gpio.attrib["lbl"]
+         onStr = gpio.attrib["on"]
+         offStr = gpio.attrib["off"]
+         enb = "{:3s}".format(gpio.attrib["enabled"])
+         gpioCalc = gpioState(onStr, offStr)
+         _on = "{:20s}".format(f"{offStr}/{gpioCalc.timeOn}")
+         _off = "{:20s}".format(f"{offStr}/{gpioCalc.timeOff}")
+         state = gpioCalc.calc_current_state()
+         state = "1" if state else "0"
+         _msg = f"\n\tGPIO [ enabled: {enb} | id: {_id} | calc_state: {state} |" \
             f" lbl: {lbl} | on: {_on} | off: {_off} ]"
          arr.append(_msg)
       # -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --

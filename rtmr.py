@@ -85,16 +85,13 @@ def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
 
 def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
    try:
-      """ -- --
-      sun_clock = sunClock(LOC_INFO)
-      on_time = sun_clock.get_time_v1(ont)
-      off_time = sun_clock.get_time_v1(oft) """
-      # - - - run - - -
+      # - - - - - -
       gpio_state = gpioState(ont, oft)
       chnl_state: bool = gpio_state.calc_current_state(activeState=True)
       print(f"\t[ current chnl_state: {chnl_state} ]\n\n")
       board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
       board.set_channel(chnl, chnl_state)
+      # - - - - - -
    except Exception as e:
       print(e)
 
