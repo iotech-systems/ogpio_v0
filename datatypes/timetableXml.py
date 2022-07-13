@@ -43,4 +43,4 @@ class timetableXml(object):
          arr.append(_msg)
       # -- print buffer --
       tbl = "".join(arr)
-      return f"\n\t- - - [ timetable ] - - -\n\tfile: {self.path}\n{tbl}"
+      return f"\n\t- - - [ timetable ] - - -\n\tfile: {self.path}\n{tbl}\n\n"
