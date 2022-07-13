@@ -33,7 +33,7 @@ class timetableXml(object):
       arr = [f"\n\t{sclk}"]
       for gpio in gpios:
          # <gpio enabled="on" id="0" lbl="CH1" on="sunset" off="sunrise" note="kasetony" />
-         enb = gpio.attrib["enabled"]; id = gpio.attrib["id"]
+         enb = "{:3s}".format(gpio.attrib["enabled"]); id = gpio.attrib["id"]
          lbl = gpio.attrib["lbl"]; ton = gpio.attrib["on"]
          toff = gpio.attrib["off"]; note = gpio.attrib["note"]
          dton = sclk.get_time_v1(ton); dtoff = sclk.get_time_v1(toff)
