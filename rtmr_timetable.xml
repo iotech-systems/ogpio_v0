@@ -4,19 +4,16 @@
    <modbus>
       <!-- stairwell lights -->
       <device id="MB_4" lbl="MODBUS_4" address="4" ttydev=";auto;9600;N;8;1;">
-         <gpio enabled="on" id="0" lbl="CH1" on="sunset" off="sunrise"
-               note="" />
-         <gpio enabled="on" id="1" lbl="CH2" on="sunset" off="sunrise"
-               note="" />
-         <gpio enabled="on" id="2" lbl="CH3" on="sunset-45" off="sunrise+45"
-               note="" />
+         <gpio enabled="on" id="0" lbl="CH1" on="6:30" off="18:00" note="" />
+         <gpio enabled="on" id="1" lbl="CH2" on="6:30" off="18:00" note="" />
+         <gpio enabled="on" id="2" lbl="CH3" on="sunset-45" off="sunrise+45" note="" />
          <gpio enabled="off" id="3" lbl="CH4" on="noon" off="noon+1" note="off" />
       </device>
       <!-- lights outside -->
       <device id="MB_8" lbl="MODBUS_8" address="8" ttydev=";auto;9600;N;8;1;">
-         <gpio enabled="on" id="0" lbl="CH1" on="6:30" off="18:00"
+         <gpio enabled="on" id="0" lbl="CH1" on="sunset" off="sunrise"
                note="kasetony" />
-         <gpio enabled="on" id="1" lbl="CH2" on="6:30" off="17:00"
+         <gpio enabled="on" id="1" lbl="CH2" on="sunset" off="sunrise"
                note="some note string" />
          <gpio enabled="on" id="2" lbl="CH3" on="sunset-45" off="sunrise+45"
                note="lights over stairwell entrance" />
