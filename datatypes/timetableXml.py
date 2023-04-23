@@ -35,6 +35,7 @@ class timetableXml(object):
          else:
             self.load()
             self.update_mb_devices()
+            self.path_mod_time = m_time
             return 1
       except Exception as e:
          print(e)
