@@ -5,9 +5,9 @@ from datatypes.ttyDev import ttyDev
 from datatypes.modbusGPIO import modbusGPIO
 
 
-class modbusInfo(object):
+class commInfo(object):
 
-   def __init__(self, e: et.Element):
+   def __init__(self, comm: str):
       self.elmt: et.Element = e
       self.address: int = int(self.elmt.attrib["address"])
       self.ttydev: ttyDev = ttyDev(self.elmt.attrib["ttydev"])

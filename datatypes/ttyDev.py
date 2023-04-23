@@ -16,6 +16,10 @@ class ttyDev(object):
    def dev(self) -> str:
       return self._dev
 
+   @dev.setter
+   def dev(self, v: str):
+      self._dev = v
+
    @property
    def baud(self) -> int:
       return int(self._br)

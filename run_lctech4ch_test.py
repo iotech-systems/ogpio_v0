@@ -46,24 +46,23 @@ print(msg)
 
 # (ser: serial.Serial, unit_adr: int, relay: int, val: int)
 def main():
+   state = False
    ser = serial.Serial(port=_port, baudrate=_baudrate, parity=_parity)
-   modbus_adr = 8
-   device: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=modbus_adr)
-   if device.set_bus_address(0, modbus_adr):
-      print(f"New Modbus address set: {modbus_adr}")
-   else:
-      print(f"New Modbus address NOT set: {modbus_adr}")
-      exit(1)
-   # -- loop --
    while True:
-      time.sleep(4.0)
-      for chl in range(0, 4):
-         device.set_channel(chl, False)
-         time.sleep(1.0)
-      time.sleep(4.0)
-      for chl in range(0, 4):
-         device.set_channel(chl, True)
-         time.sleep(1.0)
+      for mb_adr in [4, 8]:
+         device: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
+         # if device.set_bus_address(255, mb_adr):
+         #    print(f"New Modbus address set: {mb_adr}")
+         # else:
+         #    print(f"New Modbus address NOT set: {mb_adr}")
+         #    exit(1)
+         # # -- loop --
+         for chl in range(0, 4):
+            ser.write("HELLO".encode("utf-8"))
+            time.sleep(0.1)
+            device.set_channel(chl, state)
+            time.sleep(2.0)
+      state = not state
 
 
 # -- start --

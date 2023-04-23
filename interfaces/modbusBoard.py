@@ -1,7 +1,6 @@
 
-import time
-import serial
-from core.sysutils import sysutils
+import time, serial
+# from core.sysutils import sysutils
 
 
 class modbusBoard(object):
@@ -46,7 +45,7 @@ class modbusBoard(object):
          time.sleep(0.02)
          return cnt
       except Exception as e:
-         sysutils.log_error(str(e))
+         # sysutils.log_error(str(e))
          return 0
 
    def __send_ser__(self, ser: serial.Serial, outbuff: bytearray):
@@ -66,5 +65,5 @@ class modbusBoard(object):
          # -- return --
          return inbuff
       except Exception as e:
-         sysutils.log_error(str(e))
+         # sysutils.log_error(str(e))
          return None

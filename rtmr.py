@@ -9,16 +9,11 @@ from core.sunclock import *
 from utils.sysUtils import sysUtils
 from datatypes.gpioState import gpioState
 from datatypes.timetableXml import timetableXml
-from datatypes.modbusInfo import modbusInfo
+# from datatypes.modbusInfo import modbusInfo
 from datatypes.modbusGPIO import modbusGPIO
 from core.fileMonitor import fileMonitor
 from datatypes.ttyDev import ttyDev
 
-
-TT_XML = None
-MB_INFO = None
-LOC_INFO: locationTxtInfo = locationTxtInfo("location.txt")
-LOC_INFO.load()
 
 _src_file = sys.argv[0]
 _timetable_xml: str = ""
@@ -34,6 +29,11 @@ else:
 if not os.path.exists(_timetable_xml):
    print(f"\n\t[ FileNotFound: {_timetable_xml} ]\n")
    exit(1)
+
+SUN_DUMP_FILE: str = "/run/iotech/ogpio/sun.dump"
+LOC_INFO: locationTxtInfo = locationTxtInfo("location.txt")
+LOC_INFO.load()
+GPIO_TIMETABLE: timetableXml = timetableXml(_timetable_xml, LOC_INFO)
 
 
 def on_conf_change():
@@ -54,97 +54,51 @@ if os.path.exists(run_iotech_gpio):
    print(f"PathFound: {run_iotech_gpio}")
 
 
-def load_xml_conf_file():
-   global TT_XML
-   TT_XML = timetableXml(_timetable_xml)
-   if TT_XML.load() != 0:
+def load_timetable_xml_file():
+   if GPIO_TIMETABLE.load() != 0:
       print(f"UnableToLoadXmlFile: {_timetable_xml}")
       exit(1)
    # -- print tt --
-   print(TT_XML.pprint())
-   # -- load modbus node --
-   global MB_INFO
-   MB_INFO = TT_XML.get_modbusInfo()
-   print(f"\n\t-- [ ttydev.buff: {MB_INFO.ttydev.buff} ] --\n")
-   MB_INFO.load_gpios()
+   print(GPIO_TIMETABLE.pprint())
 
-def get_comm(mb_adr: int, bdr: int, par: str) -> [None, serial.Serial]:
-   # -- auto detect com port --
-   ser: [None, serial.Serial] = None
-   ports = sysUtils.usbPorts()
-   for port in ports:
+def main_loop():
+   print("\n-- [ main_loop ] --\n")
+   while True:
       try:
-         ser = serial.Serial(port.device, baudrate=bdr, parity=par)
-         if lctech4chModbus.ping(ser, mb_adr):
-            break
-         ser = None
+         # -- -- -- --
+         rval: int = GPIO_TIMETABLE.reload()
+         msg = ["FileNotChanged", "NewFileLoaded", "RunError"][rval]
+         print(msg)
+         # -- -- -- --
+         with open(SUN_DUMP_FILE, "w") as f:
+            f.write(GPIO_TIMETABLE.pprint())
+         # -- -- -- --
+         for dev in GPIO_TIMETABLE.MB_DEVICES:
+            if dev.ttydev.dev in ["NotFound", "auto"]:
+               continue
+            ser: serial.Serial = serial.Serial(port=dev.ttydev.dev)
+            board: lctech4chModbus = lctech4chModbus(ser, dev.mb_adr)
+            for pin in dev.GPIOS:
+               pin_state = gpioState(pin.on, pin.off)
+               b_state = pin_state.calc_current_state(activeState=True)
+               s_state = ""
+               board.set_channel(pin.id, b_state)
+         # -- -- -- --
       except Exception as e:
          print(e)
-   # -- return --
-   return ser
-
-def set_channel(ser: serial.Serial, mb_adr: int, chnl: int, ont: str, oft: str):
-   try:
-      # - - - - - -
-      gpio_state = gpioState(ont, oft)
-      chnl_state: bool = gpio_state.calc_current_state(activeState=True)
-      print(f"\t[ current chnl_state: {chnl_state} ]\n\n")
-      board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=mb_adr)
-      board.set_channel(chnl, chnl_state)
-      # - - - - - -
-   except Exception as e:
-      print(e)
-
-def per_gpio(ser: serial.Serial, gpio: modbusGPIO):
-   if not gpio.enabled:
-      return
-   set_channel(ser, MB_INFO.address, gpio.id, gpio.on, gpio.off)
-   time.sleep(2.0)
-
-def while_loop(ser: serial.Serial):
-   print("\n-- [ while_loop ] --\n")
-   while True:
-      # -- check xml file --
-      if fileMon.extFileChangeFlag:
-         load_xml_conf_file()
-         fileMon.extFileChangeFlag = False
-      # -- for each gpio --
-      mb_info: modbusInfo = MB_INFO
-      for gpio in mb_info.gpios:
-         per_gpio(ser, gpio)
-      # -- sleep a bit --
-      sun_fl = f"/run/iotech/ogpio/sun.dump"
-      with open(sun_fl, "w") as f:
-         f.write(TT_XML.pprint())
-      # -- THE END --
-      time.sleep(8.0)
+      finally:
+         time.sleep(8.0)
 
 def main():
-   # -- load xml file --
-   load_xml_conf_file()
-   fileMon.extFileChangeFlag = False
-   # -- run --
-   port: ttyDev = MB_INFO.ttydev
-   if port.dev == "auto":
-      ser = get_comm(mb_adr=MB_INFO.address, bdr=port.baud, par=port.parity)
-      if ser is None:
-         exit(22)
-   else:
-      ser = serial.Serial(port=port.dev, baudrate=port.baud, parity=port.parity)
-   # -- --
-   print(f"\n\tusing ser. port: {ser}\n")
-   board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=MB_INFO.address)
-   print(f"\n- - - [ SETTING MODBUS_ADR: {MB_INFO.address} ] - - -\n")
-   board.set_bus_address(0, MB_INFO.address)
-   print("\n- - - [ SETTING ALL OFF ] - - -\n")
-   board.set_all_channels(False)
-   time.sleep(4.0)
-   # -- loop --
-   while_loop(ser)
+   if GPIO_TIMETABLE.load() != 0:
+      print(f"UnableToLoadXmlFile: {_timetable_xml}")
+      exit(1)
+   GPIO_TIMETABLE.update_mb_devices()
+   main_loop()
 
 
-# -- start --
+# -- -- -- -- start  -- -- -- --
 if __name__ == "__main__":
-   PROC_NAME = "ogpio::rtmr"
+   PROC_NAME = "omms::ogpio"
    setproctitle.setproctitle(PROC_NAME)
    main()

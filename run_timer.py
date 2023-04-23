@@ -79,11 +79,11 @@ def main():
       if ser is None:
          exit(22)
    else:
-      ser = serial.Serial(port=_prt, baudrate=_bdr, parity=_par)
+      ser = serial.Serial(port=_prt, baudrate=_bdr, parity=_par, exclusive=True)
    # -- --
    board: modbusBoard = lctech4chModbus(ser_port=ser, modbus_adr=MODBUS_ADR)
    print(f"\n- - - [ SETTING MODBUS_ADR: {MODBUS_ADR} ] - - -\n")
-   board.set_bus_address(0, MODBUS_ADR)
+   # -- board.set_bus_address(0, MODBUS_ADR) --
    print("\n- - - [ SETTING ALL OFF ] - - -\n")
    board.set_all_channels(False)
    time.sleep(4.0)

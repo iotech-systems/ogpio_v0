@@ -2,6 +2,7 @@
 import serial
 from crcmod.predefined import *
 from interfaces.modbusBoard import modbusBoard
+from utils.sysUtils import sysUtils
 
 
 class lctech4chModbus(modbusBoard):
@@ -87,6 +88,21 @@ class lctech4chModbus(modbusBoard):
       # -- end --
       print(msg)
       return rval
+
+   @staticmethod
+   def get_comm_dev(mb_adr: int, bdr: int, par: str) -> (int, str):
+      # -- auto detect com port --
+      ports = sysUtils.usbPorts()
+      for port in ports:
+         try:
+            ser = serial.Serial(port.device, baudrate=bdr, parity=par)
+            if lctech4chModbus.ping(ser, mb_adr):
+               return 0, ser.port
+            else:
+               return 1, "NotFound"
+         except Exception as e:
+            print(e)
+            return 2, "Error"
 
    def __set_channel_buff__(self, relay: int, val: bool) -> [None, bytearray]:
       """

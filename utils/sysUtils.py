@@ -1,5 +1,5 @@
 
-import typing as t
+import typing as t, serial
 import xml.etree.ElementTree as et
 from serial.tools import list_ports
 
