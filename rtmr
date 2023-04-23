@@ -2,17 +2,12 @@
 
 import setproctitle
 import serial, sys, time, os.path
-from interfaces.modbusBoard import modbusBoard
 from boards.lctech4chModbus import lctech4chModbus
-from core.clock import clock
 from core.sunclock import *
-from utils.sysUtils import sysUtils
 from datatypes.gpioState import gpioState
 from datatypes.timetableXml import timetableXml
-# from datatypes.modbusInfo import modbusInfo
-from datatypes.modbusGPIO import modbusGPIO
 from core.fileMonitor import fileMonitor
-from datatypes.ttyDev import ttyDev
+from datatypes.datatypes import scheduleItem
 
 
 _src_file = sys.argv[0]
@@ -79,10 +74,14 @@ def main_loop():
             ser: serial.Serial = serial.Serial(port=dev.ttydev.dev)
             board: lctech4chModbus = lctech4chModbus(ser, dev.mb_adr)
             for pin in dev.GPIOS:
-               pin_state = gpioState(pin.on, pin.off)
-               b_state = pin_state.calc_current_state(activeState=True)
-               s_state = ""
-               board.set_channel(pin.id, b_state)
+               if not pin.enabled:
+                  board.set_channel(pin.id, False)
+               else:
+                  item: scheduleItem = pin.schedule_item_today()
+                  pin_state = gpioState(item.on, item.off)
+                  b_state = pin_state.calc_current_state(activeState=True)
+                  board.set_channel(pin.id, b_state)
+               # -- --
                time.sleep(0.48)
          # -- -- -- --
       except Exception as e:

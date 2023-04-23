@@ -11,13 +11,12 @@ class gpioState(object):
       self.strOff: str = strOff
       self.timeOn: datetime.time = self.__to_time__(self.strOn)
       self.timeOff: datetime.time = self.__to_time__(self.strOff)
-      # self.locInfo = DEFAULT_LOC_INFO
 
    def calc_current_state(self, activeState: bool = True) -> bool:
       calc_val: bool = self.__calc_state__()
       return calc_val == activeState
 
-   def __to_time__(self, tmStr: str) -> datetime.time:
+   def __to_time__(self, tmStr: str) -> [None, datetime.time]:
       t: datetime.time
       if sunClock.is_sun_format(tmStr):
          sunClk = sunClock()
@@ -28,6 +27,9 @@ class gpioState(object):
       return t
 
    def __calc_state__(self) -> bool:
+      # -- check for None --
+      if self.timeOn is None or self.timeOff is None:
+         return False
       # -- calc --
       time_now = datetime.datetime.now().time()
       # -- if in 24 hrs --

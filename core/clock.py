@@ -22,9 +22,11 @@ class clock(object):
       return True
 
    @staticmethod
-   def get_state(ont: str, oft: str):
+   def get_state(ont: str, oft: str) -> bool:
       time_on: datetime.time = clock.get_time(ont)
       time_off: datetime.time = clock.get_time(oft)
+      if time_on is None or time_off is None:
+         return False
       # -- calc --
       time_now = datetime.datetime.now().time()
       # -- if in 24 hrs --
@@ -37,10 +39,13 @@ class clock(object):
          return False
 
    @staticmethod
-   def get_time(tme: [datetime.time, str]) -> datetime.time:
+   def get_time(tme: [datetime.time, str]) -> [None, datetime.time]:
       if isinstance(tme, datetime.time):
          return tme
       # -- parse string --
+      if tme == "":
+         return None
+      # -- --
       arr = tme.split(":")
       if len(arr) == 2:
          hr, mn = arr

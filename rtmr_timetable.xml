@@ -4,20 +4,97 @@
    <modbus>
       <!-- stairwell lights -->
       <device id="MB_4" lbl="MODBUS_4" address="4" ttydev=";auto;9600;N;8;1;">
-         <gpio enabled="on" id="0" lbl="CH1" on="6:30" off="18:00" note="" />
-         <gpio enabled="on" id="1" lbl="CH2" on="6:30" off="18:00" note="" />
-         <gpio enabled="on" id="2" lbl="CH3" on="sunset-45" off="sunrise+45" note="" />
-         <gpio enabled="off" id="3" lbl="CH4" on="noon" off="noon+1" note="off" />
+         <gpio enabled="on" id="0" lbl="CH1" note="Staircase B - ">
+            <schedule>
+               <item day="Monday" on="6:50" off="18:10" />
+               <item day="Tuesday" on="6:50" off="18:10" />
+               <item day="Wednesday" on="6:50" off="18:10" />
+               <item day="Thursday" on="6:50" off="20:10" />
+               <item day="Friday" on="6:50" off="18:10" />
+               <item day="Saturday" on="6:50" off="14:10" />
+               <item day="Sunday" on="" off="" />
+            </schedule>
+         </gpio>
+         <gpio enabled="on" id="1" lbl="CH2" note="Staircase B - ">
+            <schedule>
+               <item day="Monday" on="6:50" off="18:10" />
+               <item day="Tuesday" on="6:50" off="18:10" />
+               <item day="Wednesday" on="6:50" off="18:10" />
+               <item day="Thursday" on="6:50" off="18:10" />
+               <item day="Friday" on="6:50" off="18:10" />
+               <item day="Saturday" on="6:50" off="14:10" />
+               <item day="Sunday" on="" off="" />
+            </schedule>
+         </gpio>
+         <gpio enabled="off" id="2" lbl="CH3" on="sunset-45" off="sunrise+45" note="">
+            <schedule>
+               <item day="Monday" on="sunset" off="sunrise" />
+               <item day="Tuesday" on="sunset" off="sunrise" />
+               <item day="Wednesday" on="sunset" off="sunrise" />
+               <item day="Thursday" on="sunset" off="sunrise" />
+               <item day="Friday" on="sunset" off="sunrise" />
+               <item day="Saturday" on="sunset" off="sunrise" />
+               <item day="Sunday" on="sunset" off="sunrise" />
+            </schedule>
+         </gpio>
+         <gpio enabled="off" id="3" lbl="CH4" on="noon" off="noon+1" note="off">
+            <schedule>
+               <item day="Monday" on="sunset" off="sunrise" />
+               <item day="Tuesday" on="sunset" off="sunrise" />
+               <item day="Wednesday" on="sunset" off="sunrise" />
+               <item day="Thursday" on="sunset" off="sunrise" />
+               <item day="Friday" on="sunset" off="sunrise" />
+               <item day="Saturday" on="sunset" off="sunrise" />
+               <item day="Sunday" on="sunset" off="sunrise" />
+            </schedule>
+         </gpio>
       </device>
       <!-- lights outside -->
       <device id="MB_8" lbl="MODBUS_8" address="8" ttydev=";auto;9600;N;8;1;">
-         <gpio enabled="on" id="0" lbl="CH1" on="sunset" off="sunrise"
-               note="kasetony" />
-         <gpio enabled="on" id="1" lbl="CH2" on="sunset" off="sunrise"
-               note="some note string" />
-         <gpio enabled="on" id="2" lbl="CH3" on="sunset-45" off="sunrise+45"
-               note="lights over stairwell entrance" />
-         <gpio enabled="off" id="3" lbl="CH4" on="noon" off="noon+1" note="off" />
+         <gpio enabled="on" id="0" lbl="CH1" note="kasetony">
+            <schedule>
+               <item day="Monday" on="sunset" off="sunrise" />
+               <item day="Tuesday" on="sunset" off="sunrise" />
+               <item day="Wednesday" on="sunset" off="sunrise" />
+               <item day="Thursday" on="sunset" off="sunrise" />
+               <item day="Friday" on="sunset" off="sunrise" />
+               <item day="Saturday" on="sunset" off="sunrise" />
+               <item day="Sunday" on="sunset" off="sunrise" />
+            </schedule>
+         </gpio>
+         <gpio enabled="on" id="1" lbl="CH2" note="some note string">
+            <schedule>
+               <item day="Monday" on="sunset" off="sunrise" />
+               <item day="Tuesday" on="sunset" off="sunrise" />
+               <item day="Wednesday" on="sunset" off="sunrise" />
+               <item day="Thursday" on="sunset" off="sunrise" />
+               <item day="Friday" on="sunset" off="sunrise" />
+               <item day="Saturday" on="sunset" off="sunrise" />
+               <item day="Sunday" on="sunset" off="sunrise" />
+            </schedule>
+         </gpio>
+         <gpio enabled="on" id="2" lbl="CH3" note="lights over stairwell entrance">
+            <schedule>
+               <item day="Monday" on="sunset-45" off="sunrise+45" />
+               <item day="Tuesday" on="sunset-45" off="sunrise+45" />
+               <item day="Wednesday" on="sunset-45" off="sunrise+45" />
+               <item day="Thursday" on="sunset-45" off="sunrise+45" />
+               <item day="Friday" on="sunset-45" off="sunrise+45" />
+               <item day="Saturday" on="sunset-45" off="sunrise+45" />
+               <item day="Sunday" on="sunset-45" off="sunrise+45" />
+            </schedule>
+         </gpio>
+         <gpio enabled="off" id="3" lbl="CH4" note="off">
+            <schedule>
+               <item day="Monday" on="sunset" off="sunrise" />
+               <item day="Tuesday" on="sunset" off="sunrise" />
+               <item day="Wednesday" on="sunset" off="sunrise" />
+               <item day="Thursday" on="sunset" off="sunrise" />
+               <item day="Friday" on="sunset" off="sunrise" />
+               <item day="Saturday" on="sunset" off="sunrise" />
+               <item day="Sunday" on="sunset" off="sunrise" />
+            </schedule>
+         </gpio>
       </device>
    </modbus>
 </rtmr>
