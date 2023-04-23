@@ -83,6 +83,7 @@ def main_loop():
                b_state = pin_state.calc_current_state(activeState=True)
                s_state = ""
                board.set_channel(pin.id, b_state)
+               time.sleep(0.48)
          # -- -- -- --
       except Exception as e:
          print(e)
