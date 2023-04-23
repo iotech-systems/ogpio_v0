@@ -99,6 +99,7 @@ class lctech4chModbus(modbusBoard):
             print(f"TestingPortName: {port.name}")
             ser = serial.Serial(port.device, baudrate=bdr, parity=par)
             if lctech4chModbus.ping(ser, mb_adr):
+               print(f"\n\t[ MB_ADDRESS: {mb_adr} | ON: {port.device} ]\n")
                return 0, ser.port
             else:
                continue
