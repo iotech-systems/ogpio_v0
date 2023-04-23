@@ -92,17 +92,21 @@ class lctech4chModbus(modbusBoard):
    @staticmethod
    def get_comm_dev(mb_adr: int, bdr: int, par: str) -> (int, str):
       # -- auto detect com port --
+      print("[ get_comm_dev ]")
       ports = sysUtils.usbPorts()
       for port in ports:
          try:
+            print(f"TestingPortName: {port.name}")
             ser = serial.Serial(port.device, baudrate=bdr, parity=par)
             if lctech4chModbus.ping(ser, mb_adr):
                return 0, ser.port
             else:
-               return 1, "NotFound"
+               continue
          except Exception as e:
             print(e)
             return 2, "Error"
+      # -- -- -- --
+      return 1, "NotFound"
 
    def __set_channel_buff__(self, relay: int, val: bool) -> [None, bytearray]:
       """
